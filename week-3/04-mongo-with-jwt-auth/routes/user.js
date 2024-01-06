@@ -86,8 +86,9 @@ router.post('/courses/:courseId', userMiddleware, async (req, res) => {
 router.get('/purchasedCourses', userMiddleware, async(req, res) => {
      try {
         // Fetch the user based on the username provided in the request headers
+        
         const user = await User.findOne({
-            username: req.headers.username // Make sure the header name matches the client's request
+            username: req.username // Make sure the header name matches the client's request
         });
 
         // If the user is not found, send an appropriate response
@@ -97,7 +98,7 @@ router.get('/purchasedCourses', userMiddleware, async(req, res) => {
 
         // Fetch the courses that the user has purchased
         const courses = await Course.find({
-            _id: { $in: user.purchasedCourses } // Use $in operator to find courses whose IDs are in the purchasedCourses array
+            _id: { "$in": user.purchasedCourses } // Use $in operator to find courses whose IDs are in the purchasedCourses array
         });
 
         // Send the courses in the response
