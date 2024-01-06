@@ -70,7 +70,7 @@ router.post('/courses/:courseId', userMiddleware, async (req, res) => {
     // Implement course purchase logic
     const username = req.username;
     const courseId = req.params.courseId;
-    
+
     await User.updateOne({
         username: username
     }, {
@@ -83,8 +83,29 @@ router.post('/courses/:courseId', userMiddleware, async (req, res) => {
     })
 });
 
-router.get('/purchasedCourses', userMiddleware, (req, res) => {
-    // Implement fetching purchased courses logic
+router.get('/purchasedCourses', userMiddleware, async(req, res) => {
+     try {
+        // Fetch the user based on the username provided in the request headers
+        const user = await User.findOne({
+            username: req.headers.username // Make sure the header name matches the client's request
+        });
+
+        // If the user is not found, send an appropriate response
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        // Fetch the courses that the user has purchased
+        const courses = await Course.find({
+            _id: { $in: user.purchasedCourses } // Use $in operator to find courses whose IDs are in the purchasedCourses array
+        });
+
+        // Send the courses in the response
+        res.json({ courses: courses });
+    } catch (err) {
+        // Handle any errors that occur in the process
+        res.status(500).json({ msg: 'Error fetching purchased courses' });
+    }
 });
 
 module.exports = router
