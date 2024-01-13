@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://dalmiac:dalmiacMongoDB1@dalmiac.yiceciq.mongodb.net/01-todoApp');
+mongoose.connect('your-mongo-url-here');
 
 const todo = mongoose.model('todo',
 {
